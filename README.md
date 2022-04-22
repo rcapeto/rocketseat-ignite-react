@@ -30,7 +30,7 @@ $ yarn
 # Start project
 $ yarn dev
 ```
-The app will be available in the [web address](http://localhost:3333).
+The app will be available in the [web address](http://localhost:3000).
 
 ## 💻 Project
 
