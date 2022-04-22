@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Flex, Box, Text, Avatar } from '@chakra-ui/react';
 
-export const Profile: FunctionComponent = () => {
+export const Profile: FunctionComponent = ({}) => {
    return(
       <Flex
          align="center"

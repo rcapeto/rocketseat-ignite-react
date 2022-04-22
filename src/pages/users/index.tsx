@@ -1,11 +1,13 @@
 import { NextPage } from "next";
-import { Box, Button, Checkbox, Flex, Icon, Table, Tbody, Td, Th, Thead, Tr , Text} from "@chakra-ui/react";
+import { Box, Button, Checkbox, Flex, Icon, Table, Tbody, Td, Th, Thead, Tr , Text, useBreakpointValue} from "@chakra-ui/react";
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { RiAddLine, RiPencilFill } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import { PageHeading } from "../../components/Pages/Heading";
+
+import { system_config } from "../../config";
 
 const users = [
    {
@@ -21,31 +23,40 @@ const users = [
 ];
 
 const UserList: NextPage = () => {
+   const isWideVersion = useBreakpointValue({
+      base: false,
+      lg: true,
+   });
+
    return(
       <Box>
          <Header />
 
-         <Flex w="100%" maxWidth={1480} mx="auto" px="6" mt="3">
+         <Flex w="100%" maxWidth={system_config.responsive.maxWidth} mx="auto" px="6" mt="3">
             <Sidebar />
 
-            <Box flex="1" borderRadius={8} bg="gray.800" p="8">
+            <Box flex="1" borderRadius={8} bg="gray.800" p={["4", "6", "8"]}>
                <PageHeading 
                   title="Usuários" 
                   icon={RiAddLine}
                   buttonText="Adicionar usuários"
                   hasButton
-                  onClick={() => {}}
+                  linkButton="/users/create"
                />
 
                <Table colorScheme="whiteAlpha">
                   <Thead>
                      <Tr>
-                        <Th px="6" color="gray.300" w="8">
+                        <Th px={["4", "4", "6"]} color="gray.300" w="8">
                            <Checkbox colorScheme="pink"/>
                         </Th>
                         <Th>Usuário</Th>
-                        <Th>Data de Cadastro</Th>
-                        <Th w="6"></Th>
+                        {
+                           isWideVersion && (
+                              <Th>Data de Cadastro</Th>
+                           )
+                        }
+                        <Th w="8"></Th>
                      </Tr>
                   </Thead>
 
@@ -53,7 +64,7 @@ const UserList: NextPage = () => {
                      {
                         users.map((user, index) => (
                            <Tr key={String(index)}>
-                              <Td px="6">
+                              <Td px={["4", "4", "6"]}>
                                  <Checkbox colorScheme="pink"/>
                               </Td>
                               <Td>
@@ -66,19 +77,27 @@ const UserList: NextPage = () => {
                                     </Text>
                                  </Box>
                               </Td>
-                              <Td>{user.created_at}</Td>
+                              {
+                                 isWideVersion && (
+                                    <Td>{user.created_at}</Td>
+                                 )
+                              }
                               <Td>
-                              <Button 
-                                 as="a" 
-                                 size="sm" 
-                                 fontSize="small" 
-                                 colorScheme="purple"
-                                 leftIcon={<Icon as={RiPencilFill} fontSize="16"/>}
-                                 cursor="pointer"
-                                 title="Adicionar usuários"
-                              >
-                                 Editar
-                              </Button>
+                                 {
+                                    isWideVersion && (
+                                       <Button 
+                                          as="a" 
+                                          size="sm"
+                                          fontSize="small" 
+                                          colorScheme="purple"
+                                          leftIcon={<Icon as={RiPencilFill} fontSize="16"/>}
+                                          cursor="pointer"
+                                          title="Adicionar usuários"
+                                       >
+                                          Editar
+                                       </Button>
+                                    )
+                                 }
                               </Td>
                            </Tr>
                         ))

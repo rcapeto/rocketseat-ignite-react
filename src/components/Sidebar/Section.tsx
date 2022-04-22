@@ -1,6 +1,8 @@
 import { FunctionComponent } from "react";
-import { Box, Stack, Text, Icon, Link } from '@chakra-ui/react';
+import { Box, Stack, Text, Icon, Link as ChakraLink } from '@chakra-ui/react';
 import { IconType } from "react-icons/lib";
+
+import { ActiveLink } from './ActiveLink';
 
 export interface ISectionSidebar {
    title: string;
@@ -22,15 +24,17 @@ export const SidebarSection: FunctionComponent<ISectionSidebar> = ({
          <Stack spacing="4" mt="8" align="stretch">
             {
                items.map((item, itemIndex) => (
-                  <Link 
-                     display="flex" 
-                     alignItems="center" 
-                     key={String(itemIndex)}
-                     title={item.text}
-                  >
-                     <Icon as={item.icon} fontSize="20"/>
-                     <Text ml="4" fontWeight="medium">{item.text}</Text>
-                  </Link>
+                  <ActiveLink key={String(itemIndex)} href={item.link} passHref link={item.link}>
+                     <ChakraLink 
+                        display="flex" 
+                        alignItems="center" 
+                        title={item.text}
+                        color="gray.50"
+                     >
+                        <Icon as={item.icon} fontSize="20"/>
+                        <Text ml="4" fontWeight="medium">{item.text}</Text>
+                     </ChakraLink>
+                  </ActiveLink>
                ))
             }
             

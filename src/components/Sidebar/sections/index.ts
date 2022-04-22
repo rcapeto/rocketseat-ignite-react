@@ -6,12 +6,12 @@ export const sections: ISectionSidebar[] = [
       title: 'GERAL',
       items: [
          {
-            link: '',
+            link: '/dashboard',
             icon: RiDashboardLine,
             text: 'Dashboard',
          },
          {
-            link: '',
+            link: '/users',
             icon: RiContactsLine,
             text: 'Usuários',
          }
@@ -21,12 +21,12 @@ export const sections: ISectionSidebar[] = [
       title: 'AUTOMAÇÃO',
       items: [
          {
-            link: '',
+            link: '/forms',
             icon: RiInputMethodLine,
             text: 'Formulários',
          },
          {
-            link: '',
+            link: '/automation',
             icon: RiGitMergeLine,
             text: 'Automação',
          }

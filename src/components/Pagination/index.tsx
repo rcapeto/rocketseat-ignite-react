@@ -25,7 +25,7 @@ export const Pagination: FunctionComponent = () => {
 
    return(
       <Stack
-         direction="row"
+         direction={["column", "row"]}
          mt="8"
          justify="space-between"
          align="center"

@@ -5,6 +5,7 @@ import { ApexOptions } from 'apexcharts';
  
 import { Header } from '../../components/Header';
 import { Sidebar } from '../../components/Sidebar';
+import { system_config } from '../../config';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 //ssr => false => só vai ser carregado ao lado do browser
@@ -59,12 +60,12 @@ const Dashboard: NextPage = () => {
    return(
       <Flex direction="column" h="100vh" mt="3">
          <Header />
-         <Flex w="100%" my="6" maxW={1480} px="6" mx="auto">
+         <Flex w="100%" my="6" maxW={system_config.responsive.maxWidth} px="6" mx="auto">
             <Sidebar />
 
             <SimpleGrid flex="1" gap="4" minChildWidth="320px">
                <Box 
-                  p="8"
+                  p={["6", "8"]}
                   bg="gray.800"
                   borderRadius={8}
                   pb="4"
@@ -79,7 +80,7 @@ const Dashboard: NextPage = () => {
                   />
                </Box>
                <Box 
-                  p="8"
+                  p={["6", "8"]}
                   bg="gray.800"
                   pb="4"
                   borderRadius={8}

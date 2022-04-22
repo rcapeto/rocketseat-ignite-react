@@ -4,14 +4,20 @@ import { Flex } from '@chakra-ui/react';
 import { Notifications } from "./Notifications";
 import { Profile } from "./Profile";
 
-export const RightContent: FunctionComponent = () => {
+interface IRightContent {
+   showProfileData: boolean;
+};
+
+export const RightContent: FunctionComponent<IRightContent> = ({
+   showProfileData
+}) => {
    return(
       <Flex
          align="center"
          ml="auto"
       >
          <Notifications />
-         <Profile />
+         {showProfileData && <Profile /> } 
    </Flex>
    );
 };

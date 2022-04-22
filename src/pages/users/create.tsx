@@ -7,6 +7,8 @@ import { Sidebar } from "../../components/Sidebar";
 import { PageHeading } from "../../components/Pages/Heading";
 import { Input } from "../../components/Form/Input";
 import { useForm } from '../../hooks/useForm';
+import { system_config } from '../../config';
+import Link from 'next/link';
 
 interface ArrayButtonItem extends ButtonProps {
    label: string;
@@ -72,10 +74,10 @@ const CreateUser: NextPage = () => {
       <Box>
          <Header />
 
-         <Flex w="100%" maxWidth={1480} mx="auto" px="6" mt="3">
+         <Flex w="100%" maxWidth={system_config.responsive.maxWidth} mx="auto" px="6" mt="3">
             <Sidebar />
 
-            <Box flex="1" borderRadius={8} bg="gray.800" p="8" as="form" onSubmit={handleSubmit}>
+            <Box flex="1" borderRadius={8} bg="gray.800" p={["6", "8"]} as="form" onSubmit={handleSubmit}>
                <PageHeading title="Criar usuário"/> 
 
                <VStack spacing="8">
@@ -94,11 +96,10 @@ const CreateUser: NextPage = () => {
 
                <Flex mt="8" justify="flex-end">
                   <HStack spacing="4">
-                     {
-                        buttons.map(({ label, ...button }, index) => (
-                           <Button {...button}>{label}</Button>
-                        ))
-                     }
+                     <Link href="/users" passHref>
+                        <Button type="button"colorScheme="whiteAlpha" as="a">Cancelar</Button>
+                     </Link>
+                     <Button type="submit" colorScheme="pink">Salvar</Button>
                   </HStack>
                </Flex>
             </Box>
