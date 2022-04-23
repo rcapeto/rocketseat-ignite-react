@@ -13,6 +13,8 @@ This project has developed with:
 - [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 - [Next](https://nextjs.org/docs)
 - [Chakra UI](https://chakra-ui.com/guides/first-steps)
+- [Yup](https://github.com/jquense/yup)
+- [React-Hook-Form](https://react-hook-form.com/get-started)
 
 ## 🚀 How to execute
 
@@ -37,6 +39,8 @@ The app will be available in the [web address](http://localhost:3000).
 - Dashboard using Next.
 
 ## 🔖 Layout
+<img width="1440" alt="Dashboard Preview" src="https://user-images.githubusercontent.com/61842405/164878499-86afefd6-1dff-44bb-a045-acf823e186f8.png">
+
 
 ## 👨🏻‍💻 Devs
 - [Raphael Capeto](https://github.com/rcapeto)
