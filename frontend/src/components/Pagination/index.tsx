@@ -1,27 +1,28 @@
 import { FunctionComponent } from "react";
 import { Stack, Box } from "@chakra-ui/react";
 
-import { ButtonPage, PageProps } from './ButtonPage';
+import { usePagination } from './logic';
+import { ButtonPage } from './ButtonPage';
+import { ComponentDot } from './ComponentDot';
 
-export const Pagination: FunctionComponent = () => {
-   const pages: PageProps[] = [
-      {
-         number: 1,
-         active: true,
-      },
-      {
-         number: 2,
-         active: false,
-      },
-      {
-         number: 2,
-         active: false,
-      },
-      {
-         number: 4,
-         active: false,
-      }
-   ]
+export interface PaginationProps {
+   totalCountOfRegisters: number;
+   registersPerPage?: number;
+   currentPage?: number;
+   onPageChange: (page: number) => void;
+};
+
+export const Pagination: FunctionComponent<PaginationProps> = ({ 
+   onPageChange, totalCountOfRegisters, registersPerPage = 10, currentPage = 1
+}) => {
+   const { 
+      initialPageItem, 
+      lastPage,
+      maxItemPerPage,
+      nextPages,
+      previousPages,
+      siblingsCount
+   } = usePagination(currentPage, registersPerPage, totalCountOfRegisters);
 
    return(
       <Stack
@@ -32,13 +33,46 @@ export const Pagination: FunctionComponent = () => {
          spacing="6"
       >
          <Box>
-            <strong>0</strong> - <strong>10</strong> de 100
+            <strong>{initialPageItem}</strong> - <strong>{maxItemPerPage}</strong> de {totalCountOfRegisters}
          </Box>
+
          <Stack direction="row" spacing="2">
             {
-               pages.map((page, index) => (
-                  <ButtonPage {...page} key={String(index)}/>
-               ))
+               currentPage > (1 + siblingsCount) && (
+                  <>
+                     <ButtonPage 
+                        number={1}
+                        onPageChange={onPageChange}
+                     />
+                     { 
+                        currentPage > (2 + siblingsCount) && <ComponentDot/>
+                     }
+                  </>
+               )
+            }
+
+            {
+               previousPages.length > 0 && previousPages.map(page => 
+                  <ButtonPage key={page} number={page} onPageChange={onPageChange}/>
+               )
+            }
+            <ButtonPage isCurrent number={currentPage} onPageChange={onPageChange}/>
+
+            {
+               nextPages.length > 0 && nextPages.map(page => 
+                  <ButtonPage key={page} number={page} onPageChange={onPageChange}/>
+               )
+            }
+
+            {
+               (currentPage + siblingsCount) < lastPage && (
+                  <>
+                     { 
+                        (currentPage + 1 + siblingsCount) < lastPage && <ComponentDot/>
+                     }
+                     <ButtonPage number={lastPage} onPageChange={onPageChange}/>
+                  </>
+               )
             }
          </Stack>
       </Stack>

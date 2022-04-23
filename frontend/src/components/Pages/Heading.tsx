@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import Link from 'next/link';
-import { Flex, Button, Icon, Heading, Divider } from '@chakra-ui/react';
+import { Flex, Button, Icon, Heading, Divider, Spinner } from '@chakra-ui/react';
 import { IconType } from 'react-icons';
 
 export interface PageHeadingProps {
@@ -9,10 +9,12 @@ export interface PageHeadingProps {
    hasButton?: boolean;
    buttonText?: string;
    linkButton?: string;
+   isFetching?: boolean;
+   isLoading?: boolean;
 };
 
 export const PageHeading: FunctionComponent<PageHeadingProps> = ({ 
-   title, icon, hasButton, buttonText, linkButton
+   title, icon, hasButton, buttonText, linkButton, isFetching, isLoading
 }) => {
    return(
       <>
@@ -23,6 +25,7 @@ export const PageHeading: FunctionComponent<PageHeadingProps> = ({
          >
             <Heading fontWeight="normal" fontSize="large">
                {title}
+               { !isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4"/>}
             </Heading>
 
             {

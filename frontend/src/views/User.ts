@@ -9,10 +9,7 @@ export const UserView = {
          day: '2-digit'
       });
 
-      return {
-         ...user,
-         createdAt,
-      }
+      return { ...user, createdAt }
    },
    renderMany(users: User[]): User[] {
       return users.map(user => UserView.renderOne(user));

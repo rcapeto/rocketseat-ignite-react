@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { NextPage } from "next";
+import { useRouter } from 'next/router';
 import { Box, Flex, HStack, SimpleGrid, VStack, Button } from "@chakra-ui/react";
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -8,33 +11,58 @@ import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { PageHeading } from "../../components/Pages/Heading";
 import { Input } from "../../components/Form/Input";
+
 import { system_config } from '../../config';
-import Link from 'next/link';
+import { getUser } from '../../hooks/useUser';
+import { UserView } from '../../views/User';
+import { client } from '../../config/react-query';
+import { User } from '../../@types';
 
 interface FormValues {
    name: string;
    email: string;
-   password: string;
-   password_confirmation: string;
+   createdAt: string;
 };
 
-const createUserSchema = yup.object().shape({
+interface QueryUser {
+   user: User;
+}
+
+const updateUserSchema = yup.object().shape({
    name: yup.string().required('Nome é obrigatório'),
    email: yup.string().required('E-mail é obrigatório').email('E-mail inválido'),
-   password: yup.string().required('Senha é obrigatório').min(6, 'No mínimo 6 caractéres'),
-   password_confirmation: yup.string().oneOf(
-      [null, yup.ref('password')], 
-      'As senhas precisam ser iguais!'
-   ),
 });
 
-const CreateUser: NextPage = () => {
-   const { formState, handleSubmit, register } = useForm({ 
-      resolver: yupResolver(createUserSchema)
+const User: NextPage = () => {
+   const [state, setState] = useState({ email: '', name: '', createdAt: ''});
+
+   const { handleSubmit, register, formState } = useForm({
+      resolver: yupResolver(updateUserSchema),
    });
 
-   const handleCreateUser = async (values: FormValues) => {
+   const router = useRouter();
+
+   const handleUpdateUser = (values: FormValues) => {
       console.log(values);
+   };
+
+   const handleGetUser = async (userId: string) => {
+      const queryCache = client.getQueryCache();
+      const currentUserCache = queryCache.find<QueryUser>(['user', userId]);
+      let page_user: User | null;
+
+      if(currentUserCache) {
+         const { user }= currentUserCache.state.data;
+         page_user = user;
+      } else {
+         const user = await getUser(userId);
+         page_user = user;
+      }
+
+      if(page_user) {
+         const { name, email, createdAt } = UserView.renderOne(page_user);
+         setState({ name, email, createdAt });
+      }
    };
 
    const inputs = [
@@ -43,33 +71,35 @@ const CreateUser: NextPage = () => {
             name: 'name', 
             id: 'name', 
             label: 'Nome Completo',
-            error: formState.errors.name,
+            value: state.name,
+            error: formState.errors.name
          },
          { 
             name: 'email', 
             id: 'email', 
             label: 'E-mail', 
             type: 'email',
-            error: formState.errors.email,
+            value: state.email,
+            error: formState.errors.email
          }
       ],
       [
          { 
-            name: 'password', 
-            id: 'password', 
-            label: 'Senha', 
-            type: 'password',
-            error: formState.errors.password,
-         },
-         { 
-            name: 'password_confirmation', 
-            id: 'password_confirmation', 
-            label: 'Confirmar Senha', 
-            type: 'password',
-            error: formState.errors.password_confirmation,
+            name: 'createdAt', 
+            id: 'createdAt', 
+            label: 'Cadastro realizado',
+            disabled: true, 
+            type: 'text',
+            value: state.createdAt,
          }
       ]
    ];
+
+
+   useEffect(() => {
+      const user_id = router.query.id;
+      user_id && handleGetUser(user_id as string);
+   }, [router.asPath]);
 
    return(
       <Box>
@@ -84,9 +114,9 @@ const CreateUser: NextPage = () => {
                bg="gray.800" 
                p={["6", "8"]} 
                as="form" 
-               onSubmit={handleSubmit(handleCreateUser)}
+               onSubmit={handleSubmit(handleUpdateUser)}
             >
-               <PageHeading title="Criar usuário"/> 
+               <PageHeading title="Usuário"/> 
 
                <VStack spacing="8">
                   {
@@ -126,4 +156,4 @@ const CreateUser: NextPage = () => {
    );
 };
 
-export default CreateUser;
+export default User;

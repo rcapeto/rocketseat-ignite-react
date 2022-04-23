@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NextPage } from "next";
 import { 
    Box, 
@@ -12,7 +13,6 @@ import {
    Text, 
    useBreakpointValue 
 } from "@chakra-ui/react";
-import { useQuery } from 'react-query';
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
@@ -22,22 +22,11 @@ import { PageHeading } from "../../components/Pages/Heading";
 import { UserRow } from './components/UserRow';
 
 import { system_config } from "../../config";
-import { User } from "../../@types";
-import { UserView } from "../../views/User";
+import { useUsers } from "../../hooks/useUser";
 
 const UserList: NextPage = () => {
-   const { data, isLoading, error } = useQuery<User[]>('users', async () => {
-      const response = await fetch('http://localhost:3000/api/users');
-
-      if(response.ok) {
-         const data = await response.json();
-         return UserView.renderMany(data.users);
-      }
-
-      return [];
-   },{ 
-      staleTime: 1000 * 5 //5 seconds
-   });
+   const [page, setPage] = useState(1);
+   const { data, isLoading, error, isFetching} = useUsers({ page });
 
    const isWideVersion = useBreakpointValue({
       base: false,
@@ -58,6 +47,8 @@ const UserList: NextPage = () => {
                   buttonText="Adicionar usuários"
                   hasButton
                   linkButton="/users/create"
+                  isFetching={isFetching}
+                  isLoading={isLoading}
                />
 
                {
@@ -89,7 +80,7 @@ const UserList: NextPage = () => {
       
                         <Tbody>
                            {
-                              data.map((user, index) => (
+                              data.users.map((user, index) => (
                                  <UserRow 
                                     key={String(index)}
                                     user={user}
@@ -99,7 +90,11 @@ const UserList: NextPage = () => {
                            }
                         </Tbody>
                      </Table>
-                     <Pagination />
+                     <Pagination 
+                        totalCountOfRegisters={data.totalCount}
+                        currentPage={page}
+                        onPageChange={setPage}
+                     />
                      </>
                   )
                }

@@ -3,11 +3,12 @@ import { Button } from '@chakra-ui/react';
 
 export interface PageProps {
    number: number;
-   active: boolean;
+   isCurrent?: boolean;
+   onPageChange: (page: number) => void;
 };
 
 export const ButtonPage: FunctionComponent<PageProps> = ({
-   active, number
+   isCurrent, number, onPageChange
 }) => {
    const isActiveConfig = {
       colorScheme: 'pink',
@@ -25,10 +26,10 @@ export const ButtonPage: FunctionComponent<PageProps> = ({
       }
    };
 
-   const config = active ? isActiveConfig : isNotActiveConfig;
+   const config = isCurrent ? isActiveConfig : isNotActiveConfig;
 
    return (
-      <Button size="sm" fontSize="xs" w="4" {...config}>
+      <Button size="sm" fontSize="xs" w="4" {...config} onClick={() => onPageChange(number)}>
          { number }
       </Button>
    );
