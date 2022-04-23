@@ -6,6 +6,7 @@
 
 This project has developed with:
 
+### Frontend
 - [TypeScript](https://www.typescriptlang.org/)
 - [HTML](https://developer.mozilla.org/pt-BR/docs/Web/HTML)
 - [CSS](https://www.w3schools.com/cssref/)
@@ -15,6 +16,11 @@ This project has developed with:
 - [Chakra UI](https://chakra-ui.com/guides/first-steps)
 - [Yup](https://github.com/jquense/yup)
 - [React-Hook-Form](https://react-hook-form.com/get-started)
+
+
+### Backend
+- [Swagger](https://swagger.io/docs/)
+- [Typeorm](https://typeorm.io/)
 
 ## 🚀 How to execute
 
@@ -26,13 +32,30 @@ $ cd rocketseat-ignite-react
 ```
 
 To start, follow the instructions:
+
+- Frontend
+
 ```bash
+# Navigate to frontend folder
+$ cd frontend
 # Install dependencies
 $ yarn
 # Start project
 $ yarn dev
 ```
 The app will be available in the [web address](http://localhost:3000).
+
+- Backend
+
+```bash
+# Navigate to backend folder
+$ cd backend
+# Install dependencies
+$ yarn
+# Start project
+$ yarn dev
+```
+The app will be available in the [web address](http://localhost:3333).
 
 ## 💻 Project
 
