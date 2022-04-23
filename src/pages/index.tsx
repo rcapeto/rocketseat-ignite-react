@@ -1,25 +1,27 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
 import { Flex, Button, Stack } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Input, InputProps } from '../components/Form/Input';
-import { useForm } from '../hooks/useForm';
+
+interface FormValues {
+  email: string;
+  password: string;
+}
+
+const signInSchema = yup.object().shape({
+  email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
+  password: yup.string().required('Senha obrigatória'),
+});
 
 export default function Home() {
-  const [formState, setFormState] = useState({ email: '', password: 'string' });
+  const { register, handleSubmit, formState } = useForm({
+    resolver: yupResolver(signInSchema),
+  });
 
-  const { checkEmptyFields } = useForm();
-
-  const handleSubmitForm = (event: FormEvent) => {
-    event.preventDefault();
-
-    const { hasEmptyField, emptyFields } = checkEmptyFields(formState);
-    
-    if(!hasEmptyField) {
-      console.log('pode enviar');
-    } else {
-      const message = emptyFields.map(field => `Please fill the field ${field.key}`).join('\n');
-      alert(message);
-    }
+  const handleSignIn = async (values: FormValues) => {
+    console.log(values);
   };
 
   const inputs: InputProps[] = [
@@ -28,22 +30,14 @@ export default function Home() {
       type: 'email',
       id: 'email',
       label: 'E-mail',
-      value: formState.email,
-      onChange: (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setFormState({...formState, email: value });
-      }
+      error: formState.errors.email
     },
     {
       name: 'password',
       type: 'password',
       id: 'password',
       label: 'Senha',
-      value: formState.password,
-      onChange: (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setFormState({...formState, password: value });
-      }
+      error: formState.errors.password
     }
   ];
 
@@ -62,12 +56,17 @@ export default function Home() {
         p="8"
         borderRadius={8}
         flexDir="column"
-        onSubmit={handleSubmitForm}
+        onSubmit={handleSubmit(handleSignIn)}
       >
         <Stack spacing="4">
           {
             inputs.map(({ label, ...input }, index) => (
-              <Input label={label} {...input} key={String(index)}/>
+              <Input 
+                label={label} 
+                {...input} 
+                key={String(index)} 
+                {...register(input.name)}
+              />
             ))
           }
         </Stack>
@@ -78,6 +77,7 @@ export default function Home() {
           colorScheme="pink" 
           size="large" 
           p={3}
+          isLoading={formState.isSubmitting}
         >
           Entrar
         </Button>

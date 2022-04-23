@@ -1,74 +1,74 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
 import { NextPage } from "next";
-import { Box, Flex, HStack, SimpleGrid, VStack, Button, ButtonProps } from "@chakra-ui/react";
+import { Box, Flex, HStack, SimpleGrid, VStack, Button } from "@chakra-ui/react";
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { PageHeading } from "../../components/Pages/Heading";
 import { Input } from "../../components/Form/Input";
-import { useForm } from '../../hooks/useForm';
 import { system_config } from '../../config';
 import Link from 'next/link';
 
-interface ArrayButtonItem extends ButtonProps {
-   label: string;
-}
+interface FormValues {
+   name: string;
+   email: string;
+   password: string;
+   password_confirmation: string;
+};
+
+const createUserSchema = yup.object().shape({
+   name: yup.string().required('Nome é obrigatório'),
+   email: yup.string().required('E-mail é obrigatório').email('E-mail inválido'),
+   password: yup.string().required('Senha é obrigatório').min(6, 'No mínimo 6 caractéres'),
+   password_confirmation: yup.string().oneOf([
+      null, yup.ref('password')
+   ], 'As senhas precisam ser iguais!')
+});
 
 const CreateUser: NextPage = () => {
-   const [formState, setFormState] = useState({
-      name: '', email: '', password: '', passwordConfirm: ''
+   const { formState, handleSubmit, register } = useForm({ 
+      resolver: yupResolver(createUserSchema)
    });
 
-   const { checkEmptyFields } = useForm();
+   const handleCreateUser = async (values: FormValues) => {
+      console.log(values);
+   };
 
    const inputs = [
       [
          { 
-            name: 'name', id: 'name', label: 'Nome Completo',
-            value: formState.name, onChange: (e: ChangeEvent<HTMLInputElement>) => {
-               setFormState({...formState, name: e.target.value });
-            }
+            name: 'name', 
+            id: 'name', 
+            label: 'Nome Completo',
+            error: formState.errors.name,
          },
          { 
-            name: 'email', id: 'email', label: 'E-mail', type: 'email',
-            value: formState.email, onChange: (e: ChangeEvent<HTMLInputElement>) => {
-               setFormState({...formState, email: e.target.value });
-            }
+            name: 'email', 
+            id: 'email', 
+            label: 'E-mail', 
+            type: 'email',
+            error: formState.errors.email,
          }
       ],
       [
          { 
-            name: 'password', id: 'password', label: 'Senha', type: 'password',
-            value: formState.password, onChange: (e: ChangeEvent<HTMLInputElement>) => {
-               setFormState({...formState, password: e.target.value });
-            }
+            name: 'password', 
+            id: 'password', 
+            label: 'Senha', 
+            type: 'password',
+            error: formState.errors.password,
          },
          { 
-            name: 'passwordConfirm', id: 'passwordConfirm', label: 'Confirmar Senha', type: 'password',
-            value: formState.passwordConfirm, onChange: (e: ChangeEvent<HTMLInputElement>) => {
-               setFormState({...formState, passwordConfirm: e.target.value });
-            }
+            name: 'password_confirmation', 
+            id: 'password_confirmation', 
+            label: 'Confirmar Senha', 
+            type: 'password',
+            error: formState.errors.password_confirmation,
          }
       ]
    ];
-
-   const buttons: ArrayButtonItem[] = [
-      { label: 'Cancelar', colorScheme: 'whiteAlpha', type: 'button' },
-      { label: 'Salvar', colorScheme: 'pink', type: 'submit' },
-   ];
-
-   const handleSubmit = (event: FormEvent) => {
-      event.preventDefault();
-      
-      const { hasEmptyField, emptyFields } = checkEmptyFields(formState);
-    
-      if(!hasEmptyField) {
-        console.log('pode enviar');
-      } else {
-        const message = emptyFields.map(field => `Please fill the field ${field.key}`).join('\n');
-        alert(message);
-      }
-   };
 
    return(
       <Box>
@@ -77,7 +77,14 @@ const CreateUser: NextPage = () => {
          <Flex w="100%" maxWidth={system_config.responsive.maxWidth} mx="auto" px="6" mt="3">
             <Sidebar />
 
-            <Box flex="1" borderRadius={8} bg="gray.800" p={["6", "8"]} as="form" onSubmit={handleSubmit}>
+            <Box 
+               flex="1" 
+               borderRadius={8} 
+               bg="gray.800" 
+               p={["6", "8"]} 
+               as="form" 
+               onSubmit={handleSubmit(handleCreateUser)}
+            >
                <PageHeading title="Criar usuário"/> 
 
                <VStack spacing="8">
@@ -86,7 +93,11 @@ const CreateUser: NextPage = () => {
                         <SimpleGrid minChildWidth="240px" spacing="8" w="100%" key={String(index)}>
                            {
                               group.map((input, inputIndex) => (
-                                 <Input key={String(inputIndex)} {...input}/>
+                                 <Input 
+                                    key={String(inputIndex)} 
+                                    {...input}
+                                    {...register(input.name)}
+                                 />
                               ))
                            }
                         </SimpleGrid>
@@ -99,7 +110,13 @@ const CreateUser: NextPage = () => {
                      <Link href="/users" passHref>
                         <Button type="button"colorScheme="whiteAlpha" as="a">Cancelar</Button>
                      </Link>
-                     <Button type="submit" colorScheme="pink">Salvar</Button>
+                     <Button 
+                        type="submit" 
+                        colorScheme="pink"
+                        isLoading={formState.isSubmitting}
+                     >
+                        Salvar
+                     </Button>
                   </HStack>
                </Flex>
             </Box>
