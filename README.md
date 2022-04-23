@@ -16,7 +16,9 @@ This project has developed with:
 - [Chakra UI](https://chakra-ui.com/guides/first-steps)
 - [Yup](https://github.com/jquense/yup)
 - [React-Hook-Form](https://react-hook-form.com/get-started)
-
+- [React-Query](https://react-query.tanstack.com/)
+- [MirageJS](https://miragejs.com/)
+- [Faker](https://fakerjs.dev/)
 
 ### Backend
 - [Swagger](https://swagger.io/docs/)
