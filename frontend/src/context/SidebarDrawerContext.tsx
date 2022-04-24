@@ -1,10 +1,7 @@
 import { useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { createContext, useContext, ReactNode, FunctionComponent, useEffect } from 'react';
-
-interface Provider {
-   children: ReactNode;
-}
+import { createContext, useContext, FunctionComponent, useEffect } from 'react';
+import { Provider } from '../@types';
 
 interface ContextValues {
    isOpen: boolean;

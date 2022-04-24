@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { NextPage } from "next";
 import { useRouter } from 'next/router';
 import { Box, Flex, HStack, SimpleGrid, VStack, Button } from "@chakra-ui/react";
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -17,6 +17,7 @@ import { getUser } from '../../hooks/useUser';
 import { UserView } from '../../views/User';
 import { client } from '../../config/react-query';
 import { User } from '../../@types';
+import { useModal } from '../../context/ModalContext';
 
 interface FormValues {
    name: string;
@@ -41,21 +42,23 @@ const User: NextPage = () => {
    });
 
    const router = useRouter();
+   const { dispatchModal } = useModal();
 
-   const handleUpdateUser = (values: FormValues) => {
+   const handleUpdateUser: SubmitHandler<FormValues> = async values => {
       console.log(values);
+      dispatchModal('Dados alterados com sucesso!', 'success');
    };
 
    const handleGetUser = async (userId: string) => {
       const queryCache = client.getQueryCache();
       const currentUserCache = queryCache.find<QueryUser>(['user', userId]);
-      let page_user: User | null;
+      let page_user: User | undefined;
 
       if(currentUserCache) {
-         const { user }= currentUserCache.state.data;
+         const { user } = currentUserCache.state.data;
          page_user = user;
       } else {
-         const user = await getUser(userId);
+         const { user } = await getUser(userId);
          page_user = user;
       }
 

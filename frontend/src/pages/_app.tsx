@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { theme } from "../styles/theme";
 import { SidebarDrawerProvider } from '../context/SidebarDrawerContext';
+import { ModalProvider } from '../context/ModalContext';
 import { makeServer } from '../services/mirage';
 import { client } from '../config/react-query';
 
@@ -16,10 +17,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider resetCSS theme={theme}>
       <QueryClientProvider client={client}>
-        <SidebarDrawerProvider>
-          <Component {...pageProps} />
-        </SidebarDrawerProvider>
-
+        <ModalProvider>
+          <SidebarDrawerProvider>
+            <Component {...pageProps} />
+          </SidebarDrawerProvider>
+        </ModalProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ChakraProvider>

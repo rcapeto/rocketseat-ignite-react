@@ -5,7 +5,7 @@ import { RiPencilFill } from 'react-icons/ri';
 
 import { User } from "../../../@types";
 import { client } from '../../../config/react-query';
-import api from "../../../services/api";
+import { getUser } from "../../../hooks/useUser";
 
 export interface UserRow {
    user: User;
@@ -17,10 +17,7 @@ export const UserRow: FunctionComponent<UserRow> = ({
 }) => {
    //carregar quando passar o mouse e deixar em cache
    const handlePrefecthUser = async (id: string) => {
-      await client.prefetchQuery(['user', id], async () => {
-         const { data } = await api.get(`/api/users/${id}`);
-         return data;
-      });
+      await client.prefetchQuery(['user', id], async () => await getUser(id));
    };
 
    return(

@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery, UseQueryOptions } from 'react-query';
 
 import api from '../services/api';
 import { UserView } from '../views/User';
@@ -9,9 +9,9 @@ interface GetUsersResponse {
    users: User[];
 }
 
-export const getUser = async (userId: string): Promise<User> => {
+export const getUser = async (userId: string): Promise<{ user: User }> => {
    const { data } = await api.get(`/api/users/${userId}`);
-   return data.user;
+   return data;
 };
 
 export const getUsers = async (page: number): Promise<GetUsersResponse> => {
@@ -29,8 +29,9 @@ export const getUsers = async (page: number): Promise<GetUsersResponse> => {
    }
 };
 
-export const useUsers = ({ page }: { page: number }) => {
-   return useQuery<GetUsersResponse>(['users', page], () => getUsers(page), { 
+export const useUsers = (page: number, options?: UseQueryOptions<GetUsersResponse>) => {
+   return useQuery<GetUsersResponse>(['users', page], async () => await getUsers(page), {
+      ...options,
       staleTime: 1000 * 5 //5 seconds (não atualizar por 5 segundos)
    });
 };

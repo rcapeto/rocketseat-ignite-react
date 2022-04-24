@@ -23,10 +23,11 @@ import { UserRow } from './components/UserRow';
 
 import { system_config } from "../../config";
 import { useUsers } from "../../hooks/useUser";
+import { User } from '../../@types';
 
 const UserList: NextPage = () => {
    const [page, setPage] = useState(1);
-   const { data, isLoading, error, isFetching} = useUsers({ page });
+   const { data, isLoading, error, isFetching} = useUsers(page);
 
    const isWideVersion = useBreakpointValue({
       base: false,

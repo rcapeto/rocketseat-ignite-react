@@ -1,14 +1,13 @@
-import { createServer, Factory, Model, Response } from 'miragejs';
+import { ActiveModelSerializer, createServer, Factory, Model, Response } from 'miragejs';
 import faker from '@faker-js/faker';
 
-type User = {
-   name: string;
-   email: string;
-   created_at: string;
-};
+import { User } from '../../@types';
 
 export function makeServer() {
    const server = createServer({
+      serializers: {
+         application: ActiveModelSerializer //para criar dados.
+      },
       models: {
          user: Model.extend<Partial<User>>({}),
       },
@@ -16,6 +15,9 @@ export function makeServer() {
          user: Factory.extend({
             name(i: number) {
                return `User ${i + 1}`;
+            },
+            password() {
+               return faker.internet.password(6); 
             },
             email() {
                return faker.internet.email().toLowerCase();

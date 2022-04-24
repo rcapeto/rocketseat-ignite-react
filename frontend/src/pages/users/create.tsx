@@ -1,15 +1,20 @@
 import { NextPage } from "next";
+import Link from 'next/link';
 import { Box, Flex, HStack, SimpleGrid, VStack, Button } from "@chakra-ui/react";
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from 'react-query';
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { PageHeading } from "../../components/Pages/Heading";
 import { Input } from "../../components/Form/Input";
 import { system_config } from '../../config';
-import Link from 'next/link';
+import { useModal } from '../../context/ModalContext';
+import api from "../../services/api";
+import { User } from "../../@types";
+import { client } from "../../config/react-query";
 
 interface FormValues {
    name: string;
@@ -33,8 +38,33 @@ const CreateUser: NextPage = () => {
       resolver: yupResolver(createUserSchema)
    });
 
-   const handleCreateUser = async (values: FormValues) => {
-      console.log(values);
+   const createUser = useMutation(async (user: Partial<User>) => {
+      const response = await api.post('/api/users', { 
+         user: {
+            ...user,
+            createdAt: new Date(),
+         }
+      });
+
+      return response.data.user;
+   }, { 
+      onSuccess: () => {
+         //fazer um get novamente na /api/users
+         client.invalidateQueries('users');
+      },
+   });
+
+   const { dispatchModal } = useModal();
+
+   const handleCreateUser: SubmitHandler<FormValues> = async values => {
+      const { email, name, password } = values;
+
+      try {
+         await createUser.mutateAsync({ name, email, password });
+         dispatchModal('Usuário criado com sucesso!', 'success');
+      } catch(err) {
+         dispatchModal('Erro interno do servidor!', 'error');
+      }
    };
 
    const inputs = [
